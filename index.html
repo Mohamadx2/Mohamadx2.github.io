@@ -1,787 +1,900 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#030805">
-
-  <title>The Matrix | Digital Reality</title>
-  <meta name="description"
-        content="A retro Matrix-inspired digital terminal. Welcome to the system.">
-
-  <style>
-    :root {
-      --green: #00ff66;
-      --green-soft: #8adba5;
-      --green-dim: #398653;
-      --black: #030805;
-      --panel: rgba(2, 13, 7, 0.82);
-      --border: rgba(0, 255, 102, 0.3);
-      --mono: "Courier New", Courier, monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 90px;
-    }
-
-    body {
-      min-height: 100vh;
-      overflow-x: hidden;
-      background: var(--black);
-      color: var(--green-soft);
-      font-family: var(--mono);
-      line-height: 1.7;
-      isolation: isolate;
-    }
-
-    /* YOUR BACKGROUND IMAGE:
-       Upload assets/matrix-bg.jpg to your repository. */
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -3;
-      background:
-        url("assets/matrix-bg.jpg") center center / cover no-repeat,
-        radial-gradient(ellipse at center, #092313, #010402 80%);
-      transform: scale(1.02);
-    }
-
-    /* Darken the image so the text remains readable. */
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      background:
-        linear-gradient(
-          180deg,
-          rgba(0, 0, 0, 0.72),
-          rgba(0, 8, 3, 0.76) 45%,
-          rgba(0, 0, 0, 0.94)
-        ),
-        radial-gradient(
-          circle at center,
-          transparent 10%,
-          rgba(0, 0, 0, 0.62) 100%
-        );
-    }
-
-    #matrix-rain {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
-      opacity: 0.32;
-    }
-
-    a {
-      color: var(--green);
-      text-decoration: none;
-    }
-
-    a:hover {
-      color: white;
-      text-shadow: 0 0 10px var(--green);
-    }
-
-    button, a {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    button {
-      font: inherit;
-    }
-
-    ::selection {
-      color: #000;
-      background: var(--green);
-    }
-
-    .container {
-      width: min(1100px, 90%);
-      margin-inline: auto;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(0, 5, 2, 0.9);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-    }
-
-    .nav {
-      min-height: 68px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .brand {
-      color: var(--green);
-      font-size: 0.95rem;
-      font-weight: bold;
-      letter-spacing: 2px;
-      white-space: nowrap;
-    }
-
-    .brand span {
-      color: white;
-      text-shadow: 0 0 12px var(--green);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 24px;
-      list-style: none;
-      font-size: 0.78rem;
-    }
-
-    .nav-links a {
-      color: var(--green-soft);
-    }
-
-    .nav-links a:hover {
-      color: var(--green);
-    }
-
-    .hero {
-      min-height: 79vh;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      padding-block: 100px 85px;
-    }
-
-    .eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 25px;
-      color: var(--green);
-      font-size: 0.75rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 12px var(--green);
-      animation: pulse 1.6s infinite;
-    }
-
-    h1 {
-      max-width: 900px;
-      color: var(--green);
-      font-size: clamp(2.4rem, 7vw, 5.6rem);
-      line-height: 1.04;
-      letter-spacing: -3px;
-      overflow-wrap: anywhere;
-      text-shadow: 0 0 12px rgba(0, 255, 102, 0.4);
-    }
-
-    .cursor {
-      display: inline-block;
-      margin-left: 5px;
-      animation: blink 1s steps(2, start) infinite;
-    }
-
-    .hero-description {
-      max-width: 610px;
-      margin-top: 25px;
-      color: #a0c9ac;
-      font-size: clamp(0.9rem, 2vw, 1.08rem);
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 34px;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: 11px 20px;
-      border: 1px solid var(--green);
-      background: rgba(0, 255, 102, 0.07);
-      color: var(--green);
-      font-size: 0.78rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .button.primary {
-      background: var(--green);
-      color: #001b08;
-      font-weight: bold;
-    }
-
-    .button:hover {
-      background: rgba(0, 255, 102, 0.16);
-      box-shadow: 0 0 24px rgba(0, 255, 102, 0.13);
-      color: white;
-    }
-
-    .button.primary:hover {
-      background: #8dffb5;
-      color: #001b08;
-    }
-
-    .section {
-      padding-block: 35px 80px;
-      scroll-margin-top: 85px;
-    }
-
-    .section-heading {
-      margin-bottom: 25px;
-      color: var(--green);
-      font-size: 1rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .section-heading::before {
-      content: "> ";
-      color: white;
-    }
-
-    .panel {
-      padding: clamp(20px, 4vw, 35px);
-      border: 1px solid var(--border);
-      background: var(--panel);
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.18);
-      backdrop-filter: blur(6px);
-    }
-
-    .panel p {
-      max-width: 760px;
-      margin-bottom: 15px;
-    }
-
-    .panel p:last-child {
-      margin-bottom: 0;
-    }
-
-    .dim {
-      color: var(--green-dim);
-    }
-
-    .system-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .system-card {
-      min-width: 0;
-      padding: 22px;
-      border: 1px solid var(--border);
-      background: rgba(0, 8, 3, 0.82);
-      transition: border-color 0.25s, transform 0.25s;
-    }
-
-    .system-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--green);
-    }
-
-    .card-number {
-      margin-bottom: 22px;
-      color: var(--green-dim);
-      font-size: 0.75rem;
-    }
-
-    .system-card h3 {
-      margin-bottom: 10px;
-      color: var(--green);
-      font-size: 1rem;
-    }
-
-    .system-card p {
-      color: #9abb9f;
-      font-size: 0.85rem;
-    }
-
-    .terminal {
-      overflow: hidden;
-      border: 1px solid var(--border);
-      background: rgba(0, 5, 2, 0.94);
-      box-shadow: 0 0 35px rgba(0, 255, 102, 0.05);
-    }
-
-    .terminal-bar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px 18px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(0, 255, 102, 0.04);
-      color: var(--green-dim);
-      font-size: 0.73rem;
-    }
-
-    .terminal-body {
-      min-height: 180px;
-      padding: 24px;
-      font-size: 0.88rem;
-    }
-
-    .terminal-line {
-      margin-bottom: 10px;
-      overflow-wrap: anywhere;
-    }
-
-    .prompt {
-      color: var(--green);
-    }
-
-    #terminal-output {
-      color: #a9e8ba;
-    }
-
-    .terminal-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    .small-button {
-      padding: 7px 12px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--green-soft);
-      cursor: pointer;
-      font-size: 0.75rem;
-    }
-
-    .small-button:hover {
-      border-color: var(--green);
-      color: var(--green);
-    }
-
-    .contact-line {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .contact-line p {
-      margin: 0;
-    }
-
-    footer {
-      padding-block: 25px;
-      border-top: 1px solid var(--border);
-      background: rgba(0, 0, 0, 0.65);
-      color: var(--green-dim);
-      font-size: 0.73rem;
-    }
-
-    .footer-content {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    @keyframes blink {
-      to { visibility: hidden; }
-    }
-
-    @keyframes pulse {
-      50% { opacity: 0.3; }
-    }
-
-    @media (max-width: 700px) {
-      .nav {
-        padding-block: 14px;
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .nav-links {
-        gap: 16px;
-        font-size: 0.75rem;
-      }
-
-      .hero {
-        min-height: 70vh;
-        padding-block: 85px 65px;
-      }
-
-      h1 {
-        letter-spacing: -1.5px;
-      }
-
-      .system-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .section {
-        padding-bottom: 55px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        animation: none !important;
-        transition: none !important;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MATRIX_TERMINAL // SYS.ROOT</title>
+<meta name="description" content="Retro green-on-black terminal style website." />
+<link rel="icon" href="assets/favicon.png" type="image/png" />
+
+<!-- Optional retro font. Remove this line if you want zero external requests. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   1. VARIABLES  —  EDIT THESE
+   ============================================================ */
+:root{
+  --green:        #00ff41;   /* main neon green                */
+  --green-soft:   #7dffa4;   /* body text green                */
+  --green-dim:    rgba(0, 255, 65, .35);
+  --line:         rgba(0, 255, 65, .22);
+  --black:        #030603;
+  --panel:        rgba(0, 22, 8, .55);
+
+  --font: "Share Tech Mono", "Courier New", ui-monospace, monospace;
+
+  /* === YOUR BACKGROUND IMAGE (asset folder) === */
+  --bg-image: url("assets/background.jpg");
+}
+
+/* ============================================================
+   2. RESET / BASE
+   ============================================================ */
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{
+  scroll-behavior: smooth;
+  background: var(--black);
+}
+
+body{
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--green-soft);
+  background: var(--black);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img{ max-width: 100%; display: block; }
+
+a{ color: var(--green); text-decoration: none; }
+
+::selection{
+  background: var(--green);
+  color: #001b06;
+  text-shadow: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{ width: 10px; }
+::-webkit-scrollbar-track{ background: #010401; }
+::-webkit-scrollbar-thumb{
+  background: var(--green-dim);
+  border: 1px solid var(--line);
+}
+::-webkit-scrollbar-thumb:hover{ background: var(--green); }
+
+/* ============================================================
+   3. BACKGROUND LAYERS
+   ============================================================ */
+.bg-image{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--bg-image) center center / cover no-repeat;
+  opacity: .38;
+  filter: grayscale(.35) brightness(.8) contrast(1.1);
+}
+
+.bg-tint{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(0,255,65,.12), transparent 55%),
+    linear-gradient(180deg, rgba(0,12,4,.70) 0%, rgba(0,0,0,.88) 60%, #000 100%);
+}
+
+#matrix{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .55;
+}
+
+/* Scanlines */
+.scanlines{
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(0,0,0,0)      0px,
+    rgba(0,0,0,0)      2px,
+    rgba(0,0,0,.38)    3px,
+    rgba(0,0,0,.38)    4px
+  );
+  animation: flicker 7s infinite steps(1);
+}
+
+/* Vignette */
+.vignette{
+  position: fixed;
+  inset: 0;
+  z-index: 899;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,.85) 100%);
+}
+
+@keyframes flicker{
+  0%, 96%, 100% { opacity: .55; }
+  97%           { opacity: .38; }
+  98%           { opacity: .62; }
+  99%           { opacity: .45; }
+}
+
+/* ============================================================
+   4. LAYOUT
+   ============================================================ */
+.wrap{
+  width: min(1100px, 92vw);
+  margin-inline: auto;
+}
+
+header, main, footer{
+  position: relative;
+  z-index: 2;
+}
+
+section{ padding: 90px 0; }
+
+/* ============================================================
+   5. NAV
+   ============================================================ */
+.nav{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 14px min(4vw, 32px);
+  background: rgba(2, 8, 4, .82);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 0 24px rgba(0,255,65,.10);
+}
+
+.brand{
+  font-size: 1.05rem;
+  letter-spacing: .16em;
+  color: var(--green);
+  text-shadow: 0 0 10px rgba(0,255,65,.75);
+  white-space: nowrap;
+}
+
+.brand .blink{
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+.nav nav{
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.nav nav a{
+  font-size: .88rem;
+  letter-spacing: .08em;
+  color: var(--green-soft);
+  position: relative;
+  padding: 3px 0;
+  transition: color .2s, text-shadow .2s;
+}
+
+.nav nav a::after{
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0; height: 1px;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  transition: width .25s ease;
+}
+
+.nav nav a:hover{
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0,255,65,.9);
+}
+.nav nav a:hover::after{ width: 100%; }
+
+/* ============================================================
+   6. HERO
+   ============================================================ */
+.hero{
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 0 90px;
+}
+
+.prompt{
+  font-size: clamp(.8rem, 2vw, .95rem);
+  letter-spacing: .1em;
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0,255,65,.6);
+  margin: 0 0 18px;
+  min-height: 1.6em;
+}
+
+.caret{
+  display: inline-block;
+  width: 10px;
+  height: 1.05em;
+  margin-left: 4px;
+  vertical-align: -3px;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: blink 1s steps(1) infinite;
+}
+
+.hero h1{
+  margin: 0 0 22px;
+  font-size: clamp(2.6rem, 9vw, 6rem);
+  line-height: .98;
+  letter-spacing: .04em;
+  color: var(--green);
+  text-shadow:
+    0 0 8px rgba(0,255,65,.9),
+    0 0 28px rgba(0,255,65,.45),
+    0 0 60px rgba(0,255,65,.20);
+}
+
+.hero .sub{
+  max-width: 620px;
+  margin: 0 0 38px;
+  font-size: clamp(.95rem, 2.2vw, 1.1rem);
+  color: rgba(125,255,164,.8);
+  border-left: 2px solid var(--line);
+  padding-left: 16px;
+}
+
+.actions{
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   7. GLITCH TEXT
+   ============================================================ */
+.glitch{
+  position: relative;
+  display: inline-block;
+}
+.glitch::before,
+.glitch::after{
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.glitch::before{
+  color: #00fff0;
+  opacity: .55;
+  animation: glitch-a 4.2s infinite steps(2, end);
+}
+.glitch::after{
+  color: #ff2e63;
+  opacity: .45;
+  animation: glitch-b 3.4s infinite steps(2, end);
+}
+
+@keyframes glitch-a{
+  0%, 88%, 100%{ clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+  89%{ clip-path: inset(10% 0 62% 0); transform: translate(-3px, -1px); }
+  92%{ clip-path: inset(48% 0 30% 0); transform: translate(3px, 1px); }
+  95%{ clip-path: inset(72% 0 8% 0);  transform: translate(-2px, 0); }
+}
+@keyframes glitch-b{
+  0%, 84%, 100%{ clip-path: inset(100% 0 0 0); transform: translate(0,0); }
+  85%{ clip-path: inset(24% 0 52% 0); transform: translate(3px, 1px); }
+  90%{ clip-path: inset(60% 0 22% 0); transform: translate(-3px, -1px); }
+  94%{ clip-path: inset(38% 0 42% 0); transform: translate(2px, 1px); }
+}
+
+/* ============================================================
+   8. BUTTONS
+   ============================================================ */
+.btn{
+  display: inline-block;
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: .85rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: rgba(0,255,65,.05);
+  border: 1px solid var(--green);
+  box-shadow: 0 0 14px rgba(0,255,65,.18), inset 0 0 14px rgba(0,255,65,.06);
+  cursor: pointer;
+  transition: background .18s, color .18s, box-shadow .18s, transform .18s;
+}
+.btn:hover{
+  background: var(--green);
+  color: #001b06;
+  box-shadow: 0 0 26px rgba(0,255,65,.85), 0 0 60px rgba(0,255,65,.35);
+  transform: translateY(-2px);
+}
+.btn:active{ transform: translateY(0); }
+
+.btn-ghost{
+  border-color: var(--line);
+  color: var(--green-soft);
+  background: transparent;
+  box-shadow: none;
+}
+.btn-ghost:hover{
+  background: transparent;
+  color: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 0 18px rgba(0,255,65,.35);
+}
+
+/* ============================================================
+   9. SECTION HEADINGS
+   ============================================================ */
+.sec-head{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 42px;
+}
+
+.sec-head h2{
+  margin: 0;
+  font-size: clamp(1.3rem, 3.5vw, 1.9rem);
+  letter-spacing: .12em;
+  color: var(--green);
+  text-shadow: 0 0 16px rgba(0,255,65,.55);
+  white-space: nowrap;
+}
+
+.sec-head::after{
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line), transparent);
+}
+
+.sec-head .idx{
+  font-size: .8rem;
+  color: var(--green-dim);
+  letter-spacing: .2em;
+}
+
+/* ============================================================
+   10. PANELS / CARDS
+   ============================================================ */
+.panel{
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 26px 28px;
+  position: relative;
+  backdrop-filter: blur(2px);
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+
+.panel::before{
+  content: "";
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 14px; height: 14px;
+  border-top: 2px solid var(--green);
+  border-left: 2px solid var(--green);
+}
+
+.panel::after{
+  content: "";
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 14px; height: 14px;
+  border-bottom: 2px solid var(--green);
+  border-right: 2px solid var(--green);
+}
+
+.panel:hover{
+  border-color: var(--green-dim);
+  box-shadow: 0 0 30px rgba(0,255,65,.14);
+}
+
+.grid-2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.grid-3{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* ============================================================
+   11. SPEC BARS
+   ============================================================ */
+.spec-row{
+  display: grid;
+  grid-template-columns: 130px 1fr 52px;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  font-size: .85rem;
+  letter-spacing: .08em;
+}
+
+.spec-row:last-child{ margin-bottom: 0; }
+
+.spec-row > span:first-child{ color: var(--green-soft); }
+.spec-row > span:last-child{ text-align: right; color: var(--green); }
+
+.bar{
+  display: block;
+  height: 10px;
+  background: rgba(0,255,65,.08);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.bar i{
+  display: block;
+  height: 100%;
+  width: var(--v, 50%);
+  background: linear-gradient(90deg, rgba(0,255,65,.35), var(--green));
+  box-shadow: 0 0 12px rgba(0,255,65,.8);
+  animation: bar-grow 1.6s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes bar-grow{
+  from{ width: 0; }
+}
+
+/* ============================================================
+   12. ARCHIVE CARDS
+   ============================================================ */
+.card{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+
+.card::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,255,65,.09), transparent 55%);
+  opacity: 0;
+  transition: opacity .25s;
+  pointer-events: none;
+}
+
+.card:hover{
+  transform: translateY(-4px);
+  border-color: var(--green);
+  box-shadow: 0 0 34px rgba(0,255,65,.20);
+}
+.card:hover::after{ opacity: 1; }
+
+.card h3{
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: .16em;
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0,255,65,.5);
+}
+
+.card p{
+  margin: 0;
+  font-size: .88rem;
+  color: rgba(125,255,164,.72);
+  flex: 1;
+}
+
+.tags{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag{
+  font-size: .7rem;
+  letter-spacing: .12em;
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  color: var(--green-dim);
+  background: rgba(0,255,65,.05);
+}
+
+.card .link{
+  font-size: .78rem;
+  letter-spacing: .14em;
+  color: var(--green);
+  border-bottom: 1px dashed var(--green-dim);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  transition: text-shadow .2s, border-color .2s;
+}
+.card .link:hover{
+  text-shadow: 0 0 14px var(--green);
+  border-color: var(--green);
+}
+
+/* ============================================================
+   13. CONTACT / TERMINAL BLOCK
+   ============================================================ */
+.terminal{
+  background: rgba(0, 10, 4, .78);
+  border: 1px solid var(--line);
+  box-shadow: 0 0 40px rgba(0,255,65,.10) inset;
+}
+
+.terminal-bar{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(0,255,65,.05);
+  font-size: .75rem;
+  letter-spacing: .14em;
+  color: var(--green-dim);
+}
+
+.dot{
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--green-dim);
+}
+.dot.on{ background: var(--green); box-shadow: 0 0 10px var(--green); }
+
+.terminal-body{ padding: 22px 24px; }
+
+.line{ margin: 0 0 10px; font-size: .9rem; }
+.line:last-child{ margin-bottom: 0; }
+
+.line .k{ color: var(--green); }
+.line .v{ color: rgba(125,255,164,.85); }
+
+/* ============================================================
+   14. FOOTER
+   ============================================================ */
+footer{
+  border-top: 1px solid var(--line);
+  padding: 28px 0 40px;
+  margin-top: 20px;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  color: var(--green-dim);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+footer a{ color: var(--green-soft); }
+footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
+
+/* ============================================================
+   15. RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px){
+  .grid-3{ grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 720px){
+  section{ padding: 64px 0; }
+  .grid-2, .grid-3{ grid-template-columns: 1fr; }
+  .nav{ justify-content: center; }
+  .nav nav{ gap: 16px; font-size: .85rem; }
+  .spec-row{ grid-template-columns: 96px 1fr 44px; font-size: .78rem; }
+  .panel{ padding: 22px 20px; }
+  footer{ justify-content: center; text-align: center; }
+}
+
+/* ============================================================
+   16. ACCESSIBILITY
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+  html{ scroll-behavior: auto; }
+}
+</style>
 </head>
 
 <body>
-  <canvas id="matrix-rain" aria-hidden="true"></canvas>
 
-  <header class="topbar">
-    <nav class="nav container" aria-label="Main navigation">
-      <a class="brand" href="#home">MATRIX<span>.SYS</span></a>
+<!-- ===== BACKGROUND LAYERS ===== -->
+<div class="bg-image" aria-hidden="true"></div>
+<div class="bg-tint" aria-hidden="true"></div>
+<canvas id="matrix" aria-hidden="true"></canvas>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
 
-      <ul class="nav-links">
-        <li><a href="#home">HOME</a></li>
-        <li><a href="#about">ABOUT</a></li>
-        <li><a href="#system">SYSTEM</a></li>
-        <li><a href="#terminal">TERMINAL</a></li>
-        <li><a href="#contact">CONTACT</a></li>
-      </ul>
-    </nav>
-  </header>
+<!-- ===== HEADER ===== -->
+<header class="nav">
+  <a class="brand" href="#top"><span class="blink">▮</span> MATRIX_TERMINAL</a>
+  <nav>
+    <a href="#whoami">./whoami</a>
+    <a href="#spec">./spec</a>
+    <a href="#archive">./archive</a>
+    <a href="#transmit">./transmit</a>
+  </nav>
+</header>
 
-  <main>
-    <section class="hero container" id="home">
-      <div class="eyebrow">
-        <span class="status-dot"></span>
-        CONNECTION ESTABLISHED
+<main>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero wrap" id="top">
+    <p class="prompt">root@matrix:~$ <span id="typed">access granted...</span><span class="caret" aria-hidden="true"></span></p>
+    <h1 class="glitch" data-text="WAKE UP">WAKE UP</h1>
+    <p class="sub">
+      Follow the white rabbit. Build in the dark. Ship in the green.
+      This is a retro terminal interface — powered by nothing but HTML, CSS and a little rain.
+    </p>
+    <div class="actions">
+      <a class="btn" href="#archive">[ ENTER THE ARCHIVE ]</a>
+      <a class="btn btn-ghost" href="#transmit">[ OPEN COMMS ]</a>
+    </div>
+  </section>
+
+  <!-- ===== WHOAMI ===== -->
+  <section class="wrap" id="whoami">
+    <div class="sec-head">
+      <span class="idx">[01]</span>
+      <h2>WHOAMI</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <p class="line"><span class="k">$ whoami</span></p>
+        <p class="line"><span class="v">operator :: anonymous_node</span></p>
+        <p class="line"><span class="v">location :: the_grid</span></p>
+        <p class="line"><span class="v">status &nbsp;&nbsp;:: <span style="color:var(--green)">ONLINE</span></span></p>
+        <p class="line"><span class="v">uptime &nbsp;&nbsp;:: 99.98%</span></p>
       </div>
-
-      <h1>WELCOME TO<br>THE MATRIX<span class="cursor">_</span></h1>
-
-      <p class="hero-description">
-        You have entered the system. Beyond the familiar interface lies
-        another world — a digital space built from code, ideas, and
-        endless possibilities.
-      </p>
-
-      <div class="hero-actions">
-        <a class="button primary" href="#terminal">ENTER THE SYSTEM →</a>
-        <a class="button" href="#about">READ THE MANIFESTO</a>
-      </div>
-    </section>
-
-    <section class="section container" id="about">
-      <h2 class="section-heading">01 / The reality</h2>
 
       <div class="panel">
-        <p class="dim">// A MESSAGE FROM THE OPERATOR</p>
-
-        <p>
-          What if everything you see is only an interface?
-          What if the rules you accept are just lines of code
-          waiting to be questioned?
+        <p style="margin:0 0 14px; color:var(--green); letter-spacing:.1em;">// README</p>
+        <p style="margin:0; color:rgba(125,255,164,.78);">
+          I build interfaces that look like they were pulled out of a 1980s
+          mainframe — scanlines, phosphor glow and all. Replace this text with
+          your own story, stack, or manifesto.
         </p>
-
-        <p>
-          This is a space for curiosity, experimentation,
-          technology, and independent thought. Explore the system.
-          Question the signal. Write your own reality.
-        </p>
-
-        <p class="dim">[ END OF TRANSMISSION ]</p>
       </div>
-    </section>
-
-    <section class="section container" id="system">
-      <h2 class="section-heading">02 / System modules</h2>
-
-      <div class="system-grid">
-        <article class="system-card">
-          <div class="card-number">MODULE_001</div>
-          <h3>THE CODE</h3>
-          <p>
-            HTML, CSS, and JavaScript. The language of the digital
-            world, written one line at a time.
-          </p>
-        </article>
-
-        <article class="system-card">
-          <div class="card-number">MODULE_002</div>
-          <h3>THE MIND</h3>
-          <p>
-            Philosophy, ideas, and questions that challenge the
-            boundaries between reality and perception.
-          </p>
-        </article>
-
-        <article class="system-card">
-          <div class="card-number">MODULE_003</div>
-          <h3>THE UNKNOWN</h3>
-          <p>
-            An open space for new projects, experiments, discoveries,
-            and whatever comes next.
-          </p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section container" id="terminal">
-      <h2 class="section-heading">03 / Interactive terminal</h2>
-
-      <div class="terminal">
-        <div class="terminal-bar">
-          <span>root@matrix: ~</span>
-          <span id="clock">SYSTEM TIME: --:--:--</span>
-        </div>
-
-        <div class="terminal-body">
-          <p class="terminal-line">
-            MATRIX OPERATING SYSTEM [VERSION 1.0]
-          </p>
-
-          <p class="terminal-line dim">
-            Type a command below or select an operation.
-          </p>
-
-          <p class="terminal-line">
-            <label class="prompt" for="command">root@matrix:~$ </label>
-            <input
-              id="command"
-              type="text"
-              placeholder="help"
-              autocomplete="off"
-              spellcheck="false"
-              style="width: min(65%, 360px); background: transparent;
-              border: 0; outline: none; color: #00ff66;
-              font: inherit;"
-            >
-          </p>
-
-          <div id="terminal-output" aria-live="polite">
-            Type "help" to display available commands.
-          </div>
-
-          <div class="terminal-controls">
-            <button class="small-button" type="button"
-                    data-command="help">[ HELP ]</button>
-            <button class="small-button" type="button"
-                    data-command="whoami">[ WHOAMI ]</button>
-            <button class="small-button" type="button"
-                    data-command="date">[ DATE ]</button>
-            <button class="small-button" type="button"
-                    data-command="clear">[ CLEAR ]</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section container" id="contact">
-      <h2 class="section-heading">04 / Establish contact</h2>
-
-      <div class="panel contact-line">
-        <div>
-          <p>HAVE SOMETHING TO TRANSMIT?</p>
-          <p class="dim">Every connection begins with a signal.</p>
-        </div>
-
-        <!-- Replace # with your email or social profile URL. -->
-        <a class="button" href="mailto:your@email.com">
-          SEND A TRANSMISSION ↗
-        </a>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-content">
-      <span>© <span id="year"></span> MATRIX.SYS</span>
-      <span>WAKE UP. QUESTION EVERYTHING.</span>
-      <span>ALL SYSTEMS OPERATIONAL.</span>
     </div>
-  </footer>
+  </section>
 
-  <script>
-    // DIGITAL RAIN BACKGROUND
-    (() => {
-      const canvas = document.getElementById("matrix-rain");
-      const ctx = canvas.getContext("2d");
+  <!-- ===== SPEC ===== -->
+  <section class="wrap" id="spec">
+    <div class="sec-head">
+      <span class="idx">[02]</span>
+      <h2>SYS.SPEC</h2>
+    </div>
 
-      if (!ctx) return;
+    <div class="panel">
+      <div class="spec-row">
+        <span>HTML / CSS</span>
+        <span class="bar"><i style="--v:96%"></i></span>
+        <span>96%</span>
+      </div>
+      <div class="spec-row">
+        <span>JAVASCRIPT</span>
+        <span class="bar"><i style="--v:88%"></i></span>
+        <span>88%</span>
+      </div>
+      <div class="spec-row">
+        <span>UI DESIGN</span>
+        <span class="bar"><i style="--v:81%"></i></span>
+        <span>81%</span>
+      </div>
+      <div class="spec-row">
+        <span>BACKEND</span>
+        <span class="bar"><i style="--v:70%"></i></span>
+        <span>70%</span>
+      </div>
+      <div class="spec-row">
+        <span>COFFEE</span>
+        <span class="bar"><i style="--v:100%"></i></span>
+        <span>100%</span>
+      </div>
+    </div>
+  </section>
 
-      const characters =
-        "アイウエオカキクケコサシスセソタチツテト" +
-        "012345789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const fontSize = 16;
-      let columns = 0;
-      let drops = [];
-      let frame = 0;
+  <!-- ===== ARCHIVE ===== -->
+  <section class="wrap" id="archive">
+    <div class="sec-head">
+      <span class="idx">[03]</span>
+      <h2>ARCHIVE</h2>
+    </div>
 
-      function resizeCanvas() {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    <div class="grid-3">
+      <article class="card">
+        <h3>PROJECT_01</h3>
+        <p>A terminal dashboard that streams live system metrics with a green phosphor aesthetic.</p>
+        <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+        <a class="link" href="#">&gt; view_log</a>
+      </article>
 
-        canvas.width = Math.floor(window.innerWidth * dpr);
-        canvas.height = Math.floor(window.innerHeight * dpr);
-        canvas.style.width = window.innerWidth + "px";
-        canvas.style.height = window.innerHeight + "px";
+      <article class="card">
+        <h3>PROJECT_02</h3>
+        <p>An encrypted note vault. Everything stored locally, nothing leaves the grid.</p>
+        <div class="tags"><span class="tag">JS</span><span class="tag">CRYPTO</span></div>
+        <a class="link" href="#">&gt; view_log</a>
+      </article>
 
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      <article class="card">
+        <h3>PROJECT_03</h3>
+        <p>A retro CRT landing page template with scanlines, glitch text and rain.</p>
+        <div class="tags"><span class="tag">CSS</span><span class="tag">CANVAS</span></div>
+        <a class="link" href="#">&gt; view_log</a>
+      </article>
+    </div>
+  </section>
 
-        columns = Math.ceil(window.innerWidth / fontSize);
-        drops = Array.from(
-          { length: columns },
-          () => Math.random() * -100
-        );
-      }
+  <!-- ===== TRANSMIT ===== -->
+  <section class="wrap" id="transmit">
+    <div class="sec-head">
+      <span class="idx">[04]</span>
+      <h2>TRANSMIT</h2>
+    </div>
 
-      function draw() {
-        frame++;
+    <div class="terminal panel" style="padding:0;">
+      <div class="terminal-bar">
+        <span class="dot on"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span style="margin-left:8px;">secure_channel — bash</span>
+      </div>
+      <div class="terminal-body">
+        <p class="line"><span class="k">$ connect --channel</span></p>
+        <p class="line"><span class="v">email &nbsp;&nbsp;:: <a href="mailto:you@example.com">you@example.com</a></span></p>
+        <p class="line"><span class="v">github &nbsp;:: <a href="https://github.com/" target="_blank" rel="noopener">github.com/yourhandle</a></span></p>
+        <p class="line"><span class="v">matrix &nbsp;:: @you:matrix.org</span></p>
+        <p class="line" style="margin-top:18px;">
+          <a class="btn" href="mailto:you@example.com">[ SEND TRANSMISSION ]</a>
+        </p>
+      </div>
+    </div>
+  </section>
 
-        // Reduce rendering frequency to keep the effect lightweight.
-        if (frame % 2 !== 0) {
-          requestAnimationFrame(draw);
-          return;
-        }
+</main>
 
-        ctx.fillStyle = "rgba(0, 4, 1, 0.09)";
-        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-        ctx.font = fontSize + "px monospace";
+<!-- ===== FOOTER ===== -->
+<footer class="wrap">
+  <span>© <span id="year">2025</span> MATRIX_TERMINAL — ALL SYSTEMS NOMINAL</span>
+  <span><a href="#top">^ RETURN TO SOURCE</a></span>
+</footer>
 
-        for (let i = 0; i < drops.length; i++) {
-          const char = characters[
-            Math.floor(Math.random() * characters.length)
-          ];
+<script>
+/* ============================================================
+   MATRIX RAIN
+   ============================================================ */
+(function () {
+  const canvas = document.getElementById('matrix');
+  if (!canvas) return;
 
-          ctx.fillStyle =
-            Math.random() > 0.97 ? "#d6ffe2" : "#00ff66";
+  const ctx = canvas.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-          ctx.fillText(
-            char,
-            i * fontSize,
-            drops[i] * fontSize
-          );
+  const CHARS = 'アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>[]{}/\\|=+*#$%&'.split('');
+  const FONT_SIZE = 16;
 
-          if (
-            drops[i] * fontSize > window.innerHeight &&
-            Math.random() > 0.975
-          ) {
-            drops[i] = 0;
-          }
+  let width = 0, height = 0, columns = 0, drops = [];
 
-          drops[i] += 0.45;
-        }
+  function resize() {
+    width  = canvas.width  = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    columns = Math.floor(width / FONT_SIZE);
+    drops = new Array(columns).fill(0).map(() => Math.random() * -50);
+    ctx.font = FONT_SIZE + 'px "Share Tech Mono", monospace';
+  }
 
-        requestAnimationFrame(draw);
-      }
+  function draw() {
+    // trail fade
+    ctx.fillStyle = 'rgba(3, 6, 3, 0.08)';
+    ctx.fillRect(0, 0, width, height);
 
-      resizeCanvas();
-      window.addEventListener("resize", resizeCanvas);
-      draw();
-    })();
+    ctx.font = FONT_SIZE + 'px "Share Tech Mono", monospace';
 
-    // LIVE CLOCK AND FOOTER YEAR
-    function updateClock() {
-      document.getElementById("clock").textContent =
-        "SYSTEM TIME: " +
-        new Date().toLocaleTimeString();
+    for (let i = 0; i < columns; i++) {
+      const char = CHARS[(Math.random() * CHARS.length) | 0];
+      const x = i * FONT_SIZE;
+      const y = drops[i] * FONT_SIZE;
+
+      // bright leading character
+      ctx.fillStyle = '#c9ffd8';
+      ctx.fillText(char, x, y);
+
+      // green trail
+      ctx.fillStyle = 'rgba(0, 255, 65, 0.85)';
+      ctx.fillText(CHARS[(Math.random() * CHARS.length) | 0], x, y - FONT_SIZE);
+
+      if (y > height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
     }
 
-    updateClock();
-    setInterval(updateClock, 1000);
+    requestAnimationFrame(draw);
+  }
 
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
+  resize();
+  window.addEventListener('resize', resize);
 
-    // INTERACTIVE TERMINAL
-    const commandInput = document.getElementById("command");
-    const output = document.getElementById("terminal-output");
-
-    const commands = {
-      help: [
-        "AVAILABLE COMMANDS:",
-        "help    - display this message",
-        "whoami  - identify the operator",
-        "date    - display the current date",
-        "matrix  - display a system message",
-        "clear   - clear the terminal"
-      ].join("\n"),
-
-      whoami:
-        "OPERATOR IDENTIFIED. IDENTITY: DIGITAL EXPLORER.",
-
-      date: () => new Date().toString(),
-
-      matrix:
-        "THE SYSTEM IS A TOOL. THINK BEYOND THE INTERFACE."
-    };
-
-    function runCommand(value) {
-      const cmd = value.trim().toLowerCase();
-
-      if (!cmd) return;
-
-      if (cmd === "clear") {
-        output.textContent = "";
-      } else {
-        const result = commands[cmd];
-
-        output.textContent = result
-          ? (typeof result === "function" ? result() : result)
-          : "COMMAND NOT FOUND: " + cmd +
-            ". TYPE 'help' TO SEE AVAILABLE COMMANDS.";
+  if (!reduced) {
+    requestAnimationFrame(draw);
+  } else {
+    ctx.fillStyle = 'rgba(0, 255, 65, 0.5)';
+    for (let i = 0; i < columns; i++) {
+      for (let j = 0; j < 12; j++) {
+        ctx.fillText(CHARS[(Math.random() * CHARS.length) | 0], i * FONT_SIZE, (j + 1) * 30);
       }
-
-      commandInput.value = "";
     }
+  }
+})();
 
-    commandInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        runCommand(commandInput.value);
-      }
-    });
+/* ============================================================
+   TYPEWRITER
+   ============================================================ */
+(function () {
+  const el = document.getElementById('typed');
+  if (!el) return;
 
-    document.querySelectorAll("[data-command]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const cmd = button.dataset.command;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return;
 
-        if (cmd === "clear") {
-          runCommand("clear");
-        } else {
-          runCommand(cmd);
-        }
-      });
-    });
-  </script>
+  const phrases = [
+    'access granted...',
+    'wake up, user...',
+    'follow the white rabbit',
+    'system online'
+  ];
+
+  let p = 0, i = 0, deleting = false;
+
+  function tick() {
+    const current = phrases[p];
+    el.textContent = current.slice(0, i);
+
+    if (!deleting) {
+      if (i < current.length) { i++; setTimeout(tick, 65); }
+      else { deleting = true; setTimeout(tick, 1700); }
+    } else {
+      if (i > 0) { i--; setTimeout(tick, 30); }
+      else { deleting = false; p = (p + 1) % phrases.length; setTimeout(tick, 320); }
+    }
+  }
+
+  el.textContent = '';
+  setTimeout(tick, 500);
+})();
+
+/* ============================================================
+   YEAR
+   ============================================================ */
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
 </body>
 </html>
