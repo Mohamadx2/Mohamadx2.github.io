@@ -626,6 +626,117 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
 
 <body>
 
+  <p>Background music will start automatically if the browser allows it.</p>
+
+  <!-- Hidden audio element -->
+  <audio id="bgm"
+         src="matrix.mp3"
+         loop
+         preload="auto"
+         autoplay
+         playsinline
+         crossorigin="anonymous"
+         style="display:none"></audio>
+
+<script>
+(() => {
+  const audio = document.getElementById('bgm');
+  const TARGET_VOLUME = 0.25; // background volume
+
+  let ctx, gain, source;
+  let started = false;
+  let starting = false;
+
+  function buildChain() {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    ctx = new AudioCtx();
+
+    // Take control of the audio element's output
+    source = ctx.createMediaElementSource(audio);
+
+    // 1) Remove low bass — cheap-speaker feel
+    const highpass = ctx.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.value = 180;
+
+    // 2) Remove high sparkle — muffled / low-quality sound
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 2400;
+    lowpass.Q.value = 0.7;
+
+    // 3) Volume control + fade
+    gain = ctx.createGain();
+    gain.gain.value = 0;
+
+    source
+      .connect(highpass)
+      .connect(lowpass)
+      .connect(gain)
+      .connect(ctx.destination);
+  }
+
+  function fadeTo(target, seconds = 0.8) {
+    if (!ctx || !gain) return;
+
+    const now = ctx.currentTime;
+    gain.gain.cancelScheduledValues(now);
+    gain.gain.setValueAtTime(gain.gain.value, now);
+    gain.gain.linearRampToValueAtTime(target, now + seconds);
+  }
+
+  async function startAudio() {
+    if (starting) return false;
+    starting = true;
+
+    try {
+      if (!started) {
+        buildChain();
+        started = true;
+      }
+
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
+
+      await audio.play();
+      fadeTo(TARGET_VOLUME);
+      return true;
+    } catch (err) {
+      // Most likely autoplay was blocked
+      return false;
+    } finally {
+      starting = false;
+    }
+  }
+
+  function armFirstInteractionStarter() {
+    const events = ['pointerdown', 'touchstart', 'keydown', 'click'];
+
+    const handler = async () => {
+      const ok = await startAudio();
+      if (ok) {
+        events.forEach(eventName => {
+          document.removeEventListener(eventName, handler);
+        });
+      }
+    };
+
+    events.forEach(eventName => {
+      document.addEventListener(eventName, handler, { passive: true });
+    });
+  }
+
+  // Try automatic playback as soon as possible
+  (async () => {
+    const ok = await startAudio();
+    if (!ok) {
+      // Browser blocked it — start on first user interaction
+      armFirstInteractionStarter();
+    }
+  })();
+})();
+  
 <!-- ===== BACKGROUND LAYERS ===== -->
 <div class="bg-image" aria-hidden="true"></div>
 <div class="bg-tint" aria-hidden="true"></div>
