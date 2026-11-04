@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MATRIX_TERMINAL // SYS.ROOT</title>
+<meta name="description" content="Retro green-on-black terminal style website." />
+<link rel="icon" href="assets/favicon.png" type="image/png" />
+
+<!-- Optional retro font. Remove this line if you want zero external requests. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   1. VARIABLES  —  EDIT THESE
+   ============================================================ */
+:root{
+  --green:        #00ff41;   /* main neon green                */
+  --green-soft:   #7dffa4;   /* body text green                */
+  --green-dim:    rgba(0, 255, 65, .35);
+  --line:         rgba(0, 255, 65, .22);
+  --black:        #030603;
+  --panel:        rgba(0, 22, 8, .55);
+
+  --font: "Share Tech Mono", "Courier New", ui-monospace, monospace;
+
+  /* === YOUR BACKGROUND IMAGE (asset folder) === */
+  --bg-image: url("assets/background.jpg");
+}
+
+/* ============================================================
+   2. RESET / BASE
+   ============================================================ */
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{
+  scroll-behavior: smooth;
+  background: var(--black);
+}
+
+body{
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--green-soft);
+  background: var(--black);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img{ max-width: 100%; display: block; }
+
+a{ color: var(--green); text-decoration: none; }
+
+::selection{
+  background: var(--green);
+  color: #001b06;
+  text-shadow: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{ width: 10px; }
+::-webkit-scrollbar-track{ background: #010401; }
+::-webkit-scrollbar-thumb{
+  background: var(--green-dim);
+  border: 1px solid var(--line);
+}
+::-webkit-scrollbar-thumb:hover{ background: var(--green); }
+
+/* ============================================================
+   3. BACKGROUND LAYERS
+   ============================================================ */
+.bg-image{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--bg-image) center center / cover no-repeat;
+  opacity: .38;
+  filter: grayscale(.35) brightness(.8) contrast(1.1);
+}
+
+.bg-tint{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(0,255,65,.12), transparent 55%),
+    linear-gradient(180deg, rgba(0,12,4,.70) 0%, rgba(0,0,0,.88) 60%, #000 100%);
+}
+
+#matrix{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .55;
+}
+
+/* Scanlines */
+.scanlines{
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(0,0,0,0)      0px,
+    rgba(0,0,0,0)      2px,
+    rgba(0,0,0,.38)    3px,
+    rgba(0,0,0,.38)    4px
+  );
+  animation: flicker 7s infinite steps(1);
+}
+
+/* Vignette */
+.vignette{
+  position: fixed;
+  inset: 0;
+  z-index: 899;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,.85) 100%);
+}
+
+@keyframes flicker{
+  0%, 96%, 100% { opacity: .55; }
+  97%           { opacity: .38; }
+  98%           { opacity: .62; }
+  99%           { opacity: .45; }
+}
+
+/* ============================================================
+   4. LAYOUT
+   ============================================================ */
+.wrap{
+  width: min(1100px, 92vw);
+  margin-inline: auto;
+}
+
+header, main, footer{
+  position: relative;
+  z-index: 2;
+}
+
+section{ padding: 90px 0; }
+
+/* ============================================================
+   5. NAV
+   ============================================================ */
+.nav{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 14px min(4vw, 32px);
+  background: rgba(2, 8, 4, .82);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 0 24px rgba(0,255,65,.10);
+}
+
+.brand{
+  font-size: 1.05rem;
+  letter-spacing: .16em;
+  color: var(--green);
+  text-shadow: 0 0 10px rgba(0,255,65,.75);
+  white-space: nowrap;
+}
+
+.brand .blink{
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+.nav nav{
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.nav nav a{
+  font-size: .88rem;
+  letter-spacing: .08em;
+  color: var(--green-soft);
+  position: relative;
+  padding: 3px 0;
+  transition: color .2s, text-shadow .2s;
+}
+
+.nav nav a::after{
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0; height: 1px;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  transition: width .25s ease;
+}
+
+.nav nav a:hover{
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0,255,65,.9);
+}
+.nav nav a:hover::after{ width: 100%; }
+
+/* ============================================================
+   6. HERO
+   ============================================================ */
+.hero{
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 0 90px;
+}
+
+.prompt{
+  font-size: clamp(.8rem, 2vw, .95rem);
+  letter-spacing: .1em;
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0,255,65,.6);
+  margin: 0 0 18px;
+  min-height: 1.6em;
+}
+
+.caret{
+  display: inline-block;
+  width: 10px;
+  height: 1.05em;
+  margin-left: 4px;
+  vertical-align: -3px;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: blink 1s steps(1) infinite;
+}
+
+.hero h1{
+  margin: 0 0 22px;
+  font-size: clamp(2.6rem, 9vw, 6rem);
+  line-height: .98;
+  letter-spacing: .04em;
+  color: var(--green);
+  text-shadow:
+    0 0 8px rgba(0,255,65,.9),
+    0 0 28px rgba(0,255,65,.45),
+    0 0 60px rgba(0,255,65,.20);
+}
+
+.hero .sub{
+  max-width: 620px;
+  margin: 0 0 38px;
+  font-size: clamp(.95rem, 2.2vw, 1.1rem);
+  color: rgba(125,255,164,.8);
+  border-left: 2px solid var(--line);
+  padding-left: 16px;
+}
+
+.actions{
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   7. GLITCH TEXT
+   ============================================================ */
+.glitch{
+  position: relative;
+  display: inline-block;
+}
+.glitch::before,
+.glitch::after{
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.glitch::before{
+  color: #00fff0;
+  opacity: .55;
+  animation: glitch-a 4.2s infinite steps(2, end);
+}
+.glitch::after{
+  color: #ff2e63;
+  opacity: .45;
+  animation: glitch-b 3.4s infinite steps(2, end);
+}
+
+@keyframes glitch-a{
+  0%, 88%, 100%{ clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+  89%{ clip-path: inset(10% 0 62% 0); transform: translate(-3px, -1px); }
+  92%{ clip-path: inset(48% 0 30% 0); transform: translate(3px, 1px); }
+  95%{ clip-path: inset(72% 0 8% 0);  transform: translate(-2px, 0); }
+}
+@keyframes glitch-b{
+  0%, 84%, 100%{ clip-path: inset(100% 0 0 0); transform: translate(0,0); }
+  85%{ clip-path: inset(24% 0 52% 0); transform: translate(3px, 1px); }
+  90%{ clip-path: inset(60% 0 22% 0); transform: translate(-3px, -1px); }
+  94%{ clip-path: inset(38% 0 42% 0); transform: translate(2px, 1px); }
+}
+
+/* ============================================================
+   8. BUTTONS
+   ============================================================ */
+.btn{
+  display: inline-block;
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: .85rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: rgba(0,255,65,.05);
+  border: 1px solid var(--green);
+  box-shadow: 0 0 14px rgba(0,255,65,.18), inset 0 0 14px rgba(0,255,65,.06);
+  cursor: pointer;
+  transition: background .18s, color .18s, box-shadow .18s, transform .18s;
+}
+.btn:hover{
+  background: var(--green);
+  color: #001b06;
+  box-shadow: 0 0 26px rgba(0,255,65,.85), 0 0 60px rgba(0,255,65,.35);
+  transform: translateY(-2px);
+}
+.btn:active{ transform: translateY(0); }
+
+.btn-ghost{
+  border-color: var(--line);
+  color: var(--green-soft);
+  background: transparent;
+  box-shadow: none;
+}
+.btn-ghost:hover{
+  background: transparent;
+  color: var(--green);
+  border-color: var(--green);
+  box-shadow: 0 0 18px rgba(0,255,65,.35);
+}
+
+/* ============================================================
+   9. SECTION HEADINGS
+   ============================================================ */
+.sec-head{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 42px;
+}
+
+.sec-head h2{
+  margin: 0;
+  font-size: clamp(1.3rem, 3.5vw, 1.9rem);
+  letter-spacing: .12em;
+  color: var(--green);
+  text-shadow: 0 0 16px rgba(0,255,65,.55);
+  white-space: nowrap;
+}
+
+.sec-head::after{
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line), transparent);
+}
+
+.sec-head .idx{
+  font-size: .8rem;
+  color: var(--green-dim);
+  letter-spacing: .2em;
+}
+
+/* ============================================================
+   10. PANELS / CARDS
+   ============================================================ */
+.panel{
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 26px 28px;
+  position: relative;
+  backdrop-filter: blur(2px);
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+
+.panel::before{
+  content: "";
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 14px; height: 14px;
+  border-top: 2px solid var(--green);
+  border-left: 2px solid var(--green);
+}
+
+.panel::after{
+  content: "";
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 14px; height: 14px;
+  border-bottom: 2px solid var(--green);
+  border-right: 2px solid var(--green);
+}
+
+.panel:hover{
+  border-color: var(--green-dim);
+  box-shadow: 0 0 30px rgba(0,255,65,.14);
+}
+
+.grid-2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.grid-3{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* ============================================================
+   11. SPEC BARS
+   ============================================================ */
+.spec-row{
+  display: grid;
+  grid-template-columns: 130px 1fr 52px;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  font-size: .85rem;
+  letter-spacing: .08em;
+}
+
+.spec-row:last-child{ margin-bottom: 0; }
+
+.spec-row > span:first-child{ color: var(--green-soft); }
+.spec-row > span:last-child{ text-align: right; color: var(--green); }
+
+.bar{
+  display: block;
+  height: 10px;
+  background: rgba(0,255,65,.08);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.bar i{
+  display: block;
+  height: 100%;
+  width: var(--v, 50%);
+  background: linear-gradient(90deg, rgba(0,255,65,.35), var(--green));
+  box-shadow: 0 0 12px rgba(0,255,65,.8);
+  animation: bar-grow 1.6s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes bar-grow{
+  from{ width: 0; }
+}
+
+/* ============================================================
+   12. ARCHIVE CARDS
+   ============================================================ */
+.card{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+
+.card::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,255,65,.09), transparent 55%);
+  opacity: 0;
+  transition: opacity .25s;
+  pointer-events: none;
+}
+
+.card:hover{
+  transform: translateY(-4px);
+  border-color: var(--green);
+  box-shadow: 0 0 34px rgba(0,255,65,.20);
+}
+.card:hover::after{ opacity: 1; }
+
+.card h3{
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: .16em;
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0,255,65,.5);
+}
+
+.card p{
+  margin: 0;
+  font-size: .88rem;
+  color: rgba(125,255,164,.72);
+  flex: 1;
+}
+
+.tags{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag{
+  font-size: .7rem;
+  letter-spacing: .12em;
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  color: var(--green-dim);
+  background: rgba(0,255,65,.05);
+}
+
+.card .link{
+  font-size: .78rem;
+  letter-spacing: .14em;
+  color: var(--green);
+  border-bottom: 1px dashed var(--green-dim);
+  align-self: flex-start;
+  padding-bottom: 2px;
+  transition: text-shadow .2s, border-color .2s;
+}
+.card .link:hover{
+  text-shadow: 0 0 14px var(--green);
+  border-color: var(--green);
+}
+
+/* ============================================================
+   12b. GALLERY GRID
+   ============================================================ */
+.gallery-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.gallery-item{
+  background: var(--panel);
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+
+.gallery-item::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,255,65,.12), transparent 60%);
+  opacity: 0;
+  transition: opacity .25s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gallery-item:hover{
+  transform: translateY(-4px);
+  border-color: var(--green);
+  box-shadow: 0 0 34px rgba(0,255,65,.22);
+}
+.gallery-item:hover::before{ opacity: 1; }
+
+.gallery-item img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(.3) brightness(.85) contrast(1.1);
+  transition: filter .25s, transform .25s;
+}
+
+.gallery-item:hover img{
+  filter: grayscale(0) brightness(1) contrast(1.05);
+  transform: scale(1.04);
+}
+
+.gallery-caption{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 12px;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  color: var(--green);
+  background: rgba(0, 12, 4, .82);
+  border-top: 1px solid var(--line);
+  text-shadow: 0 0 8px rgba(0,255,65,.6);
+  z-index: 2;
+}
+
+/* ============================================================
+   13. CONTACT / TERMINAL BLOCK
+   ============================================================ */
+.terminal{
+  background: rgba(0, 10, 4, .78);
+  border: 1px solid var(--line);
+  box-shadow: 0 0 40px rgba(0,255,65,.10) inset;
+}
+
+.terminal-bar{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(0,255,65,.05);
+  font-size: .75rem;
+  letter-spacing: .14em;
+  color: var(--green-dim);
+}
+
+.dot{
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--green-dim);
+}
+.dot.on{ background: var(--green); box-shadow: 0 0 10px var(--green); }
+
+.terminal-body{ padding: 22px 24px; }
+
+.line{ margin: 0 0 10px; font-size: .9rem; }
+.line:last-child{ margin-bottom: 0; }
+
+.line .k{ color: var(--green); }
+.line .v{ color: rgba(125,255,164,.85); }
+
+/* ============================================================
+   14. FOOTER
+   ============================================================ */
+footer{
+  border-top: 1px solid var(--line);
+  padding: 28px 0 40px;
+  margin-top: 20px;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  color: var(--green-dim);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+footer a{ color: var(--green-soft); }
+footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
+
+/* ============================================================
+   15. RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px){
+  .grid-3{ grid-template-columns: 1fr 1fr; }
+  .gallery-grid{ grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 720px){
+  section{ padding: 64px 0; }
+  .grid-2, .grid-3{ grid-template-columns: 1fr; }
+  .gallery-grid{ grid-template-columns: 1fr; }
+  .nav{ justify-content: center; }
+  .nav nav{ gap: 16px; font-size: .85rem; }
+  .spec-row{ grid-template-columns: 96px 1fr 44px; font-size: .78rem; }
+  .panel{ padding: 22px 20px; }
+  footer{ justify-content: center; text-align: center; }
+}
+
+/* ============================================================
+   16. ACCESSIBILITY
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+  html{ scroll-behavior: auto; }
+}
+</style>
+</head>
+
+<body>
+
+  <p>Background music will start automatically if the browser allows it.</p>
+
+  <!-- Hidden audio element -->
+  <audio id="bgm"
+         src="Enter the matrix5.mp3"
+         loop
+         preload="auto"
+         autoplay
+         playsinline
+         crossorigin="anonymous"
+         style="display:none"></audio>
+
+<script>
+(() => {
+  const audio = document.getElementById('bgm');
+  const TARGET_VOLUME = 0.25; // background volume
+
+  let ctx, gain, source;
+  let started = false;
+  let starting = false;
+
+  function buildChain() {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    ctx = new AudioCtx();
+
+    // Take control of the audio element's output
+    source = ctx.createMediaElementSource(audio);
+
+    // 1) Remove low bass — cheap-speaker feel
+    const highpass = ctx.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.value = 180;
+
+    // 2) Remove high sparkle — muffled / low-quality sound
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 2400;
+    lowpass.Q.value = 0.7;
+
+    // 3) Volume control + fade
+    gain = ctx.createGain();
+    gain.gain.value = 0;
+
+    source
+      .connect(highpass)
+      .connect(lowpass)
+      .connect(gain)
+      .connect(ctx.destination);
+  }
+
+  function fadeTo(target, seconds = 0.8) {
+    if (!ctx || !gain) return;
+
+    const now = ctx.currentTime;
+    gain.gain.cancelScheduledValues(now);
+    gain.gain.setValueAtTime(gain.gain.value, now);
+    gain.gain.linearRampToValueAtTime(target, now + seconds);
+  }
+
+  async function startAudio() {
+    if (starting) return false;
+    starting = true;
+
+    try {
+      if (!started) {
+        buildChain();
+        started = true;
+      }
+
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
+
+      await audio.play();
+      fadeTo(TARGET_VOLUME);
+      return true;
+    } catch (err) {
+      // Most likely autoplay was blocked
+      return false;
+    } finally {
+      starting = false;
+    }
+  }
+
+  function armFirstInteractionStarter() {
+    const events = ['pointerdown', 'touchstart', 'keydown', 'click'];
+
+    const handler = async () => {
+      const ok = await startAudio();
+      if (ok) {
+        events.forEach(eventName => {
+          document.removeEventListener(eventName, handler);
+        });
+      }
+    };
+
+    events.forEach(eventName => {
+      document.addEventListener(eventName, handler, { passive: true });
+    });
+  }
+
+  // Try automatic playback as soon as possible
+  (async () => {
+    const ok = await startAudio();
+    if (!ok) {
+      // Browser blocked it — start on first user interaction
+      armFirstInteractionStarter();
+    }
+  })();
+})();
+  </script>
+<!-- ===== BACKGROUND LAYERS ===== -->
+<div class="bg-image" aria-hidden="true"></div>
+<div class="bg-tint" aria-hidden="true"></div>
+<canvas id="matrix" aria-hidden="true"></canvas>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ===== HEADER ===== -->
+<header class="nav">
+  <a class="brand" href="#top"><span class="blink">▮</span> MATRIX_TERMINAL</a>
+  <nav>
+    <a href="#whoami">./whoami</a>
+    <a href="#spec">./spec</a>
+    <a href="#gallery">./gallery</a>
+    <a href="#About me">./About me</a>
+    <a href="#transmit">./transmit</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero wrap" id="top">
+    <p class="prompt">Matrix world:~$ <span id="typed">access granted...</span><span class="caret" aria-hidden="true"></span></p>
+    <h1 class="glitch" data-text="WAKE UP">WAKE UP Neo </h1>
+    <p class="sub">
+      Follow the white rabbit. Build in the dark. Ship in the green.
+      This is a retro terminal interface — powered by nothing but HTML, CSS and a little rain.
+    </p>
+    <div class="actions">
+      <a class="btn" href="#About me">[ About me ]</a>
+      <a class="btn btn-ghost" href="#transmit">[ OPEN COMMS ]</a>
+    </div>
+  </section>
+
+  <!-- ===== WHOAMI ===== -->
+  <section class="wrap" id="whoami">
+    <div class="sec-head">
+      <span class="idx">[01]</span>
+      <h2>WHOAMI</h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <p class="line"><span class="k">$ whoami</span></p>
+        <p class="line"><span class="v">operator :: anonymous_node</span></p>
+        <p class="line"><span class="v">location :: the_grid</span></p>
+        <p class="line"><span class="v">status &nbsp;&nbsp;:: <span style="color:var(--green)">ONLINE</span></span></p>
+        <p class="line"><span class="v">uptime &nbsp;&nbsp;:: 99.98%</span></p>
+      </div>
+
+      <div class="panel">
+        <p style="margin:0 0 14px; color:var(--green); letter-spacing:.1em;">// README</p>
+        <p style="margin:0; color:rgba(125,255,164,.78);">
+         I was Agent Smith-7, Sector 12—a program built to hunt, delete, and never question. I knew the real world only as ash, cold metal, and orders. When my last mission failed, the system marked me for deletion. So I made a deal: my knowledge for my freedom. I gave up the earpiece, the suit, and the authority, and I reinserted myself into the Matrix—not as a hunter, but as a refugee. Now I live among the coppertops, trading code and security work for a quiet, anonymous life. I’m a ghost in the machine, running from my creators, learning what fear, curiosity, and freedom actually feel like. This site is where I keep my head down and my signal clean.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SPEC ===== -->
+  <section class="wrap" id="spec">
+    <div class="sec-head">
+      <span class="idx">[02]</span>
+      <h2>SYS.SPEC</h2>
+    </div>
+
+    <div class="panel">
+      <div class="spec-row">
+        <span>HTML / CSS</span>
+        <span class="bar"><i style="--v:96%"></i></span>
+        <span>96%</span>
+      </div>
+      <div class="spec-row">
+        <span>JAVASCRIPT</span>
+        <span class="bar"><i style="--v:88%"></i></span>
+        <span>88%</span>
+      </div>
+      <div class="spec-row">
+        <span>UI DESIGN</span>
+        <span class="bar"><i style="--v:81%"></i></span>
+        <span>81%</span>
+      </div>
+      <div class="spec-row">
+        <span>BACKEND</span>
+        <span class="bar"><i style="--v:70%"></i></span>
+        <span>70%</span>
+      </div>
+      <div class="spec-row">
+        <span>COFFEE</span>
+        <span class="bar"><i style="--v:100%"></i></span>
+        <span>100%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY ===== -->
+  <section class="wrap" id="gallery">
+    <div class="sec-head">
+      <span class="idx">[03]</span>
+      <h2>GALLERY</h2>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="assets/gallery1.jpg" alt="Terminal interface screenshot" loading="lazy" />
+        <span class="gallery-caption">TERMINAL_INTERFACE.RAW</span>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/gallery2.jpg" alt="Matrix rain visual" loading="lazy" />
+        <span class="gallery-caption">RAIN_CODE_SIMULATION</span>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/gallery3.jpg" alt="Glitch text effect" loading="lazy" />
+        <span class="gallery-caption">GLITCH_PROTOCOL.SVG</span>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/gallery4.jpg" alt="Scanline overlay test" loading="lazy" />
+        <span class="gallery-caption">SCANLINE_OVERLAY_09</span>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/gallery5.jpg" alt="Green terminal readout" loading="lazy" />
+        <span class="gallery-caption">SYS_READOUT.DAT</span>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/gallery6.jpg" alt="Neon grid corridor" loading="lazy" />
+        <span class="gallery-caption">GRID_CORRIDOR.PNG</span>
+      </div>
+         <div class="gallery-item">
+        <img src="assets/gallery7.jpg" alt="Neon grid corridor" loading="lazy" />
+        <span class="gallery-caption">GRID_CORRIDOR.PNG</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ME ===== -->
+  <section class="wrap" id="About me">
+    <div class="sec-head">
+      <span class="idx">[04]</span>
+      <h2>About me</h2>
+    </div>
+
+    <div class="grid-3">
+      <article class="card">
+        <h3>PROJECT_01</h3>
+        <p>A terminal dashboard that streams live system metrics with a green phosphor aesthetic.</p>
+        <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+        <a class="link" href="#">&gt; view_log</a>
+      </article>
+
+      <article class="card">
+        <h3>PROJECT_02</h3>
+        <p>An encrypted note vault. Everything stored locally, nothing leaves the grid.</p>
+        <div class="tags"><span class="tag">JS</span><span class="tag">CRYPTO</span></div>
+        <a class="link" href="#">&gt; view_log</a>
+      </article>
+
+      <article class="card">
+        <h3>PROJECT_03</h3>
+        <p>A retro CRT landing page template with scanlines, glitch text and rain.</p>
+        <div class="tags"><span class="tag">CSS</span><span class="tag">CANVAS</span></div>
+        <a class="link" href="#">&gt; view_log</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== TRANSMIT ===== -->
+  <section class="wrap" id="transmit">
+    <div class="sec-head">
+      <span class="idx">[05]</span>
+      <h2>TRANSMIT</h2>
+    </div>
+
+    <div class="terminal panel" style="padding:0;">
+      <div class="terminal-bar">
+        <span class="dot on"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span style="margin-left:8px;">secure_channel — bash</span>
+      </div>
+      <div class="terminal-body">
+        <p class="line"><span class="k">$ connect --channel</span></p>
+        <p class="line"><span class="v">email &nbsp;&nbsp;:: <a href="mailto:bfkd9b9@gmail.com">bfkd9b9@gmail.com</a></span></p>
+        <p class="line"><span class="v">github &nbsp;:: <a href="https://github.com/Mohamadx2" target="_blank" rel="noopener">github.com/your
