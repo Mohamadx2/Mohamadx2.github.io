@@ -7,32 +7,22 @@
 <meta name="description" content="Retro green-on-black terminal style website." />
 <link rel="icon" href="assets/favicon.png" type="image/png" />
 
-<!-- Optional retro font. Remove this line if you want zero external requests. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
-/* ============================================================
-   1. VARIABLES  —  EDIT THESE
-   ============================================================ */
 :root{
-  --green:        #00ff41;   /* main neon green                */
-  --green-soft:   #7dffa4;   /* body text green                */
+  --green:        #00ff41;
+  --green-soft:   #7dffa4;
   --green-dim:    rgba(0, 255, 65, .35);
   --line:         rgba(0, 255, 65, .22);
   --black:        #030603;
   --panel:        rgba(0, 22, 8, .55);
-
   --font: "Share Tech Mono", "Courier New", ui-monospace, monospace;
-
-  /* === YOUR BACKGROUND IMAGE (asset folder) === */
   --bg-image: url("assets/background.jpg");
 }
 
-/* ============================================================
-   2. RESET / BASE
-   ============================================================ */
 *, *::before, *::after{ box-sizing: border-box; }
 
 html{
@@ -53,7 +43,6 @@ body{
 }
 
 img{ max-width: 100%; display: block; }
-
 a{ color: var(--green); text-decoration: none; }
 
 ::selection{
@@ -62,7 +51,6 @@ a{ color: var(--green); text-decoration: none; }
   text-shadow: none;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar{ width: 10px; }
 ::-webkit-scrollbar-track{ background: #010401; }
 ::-webkit-scrollbar-thumb{
@@ -71,17 +59,14 @@ a{ color: var(--green); text-decoration: none; }
 }
 ::-webkit-scrollbar-thumb:hover{ background: var(--green); }
 
-/* ============================================================
-   3. BACKGROUND LAYERS
-   ============================================================ */
 .bg-image{
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background: var(--bg-image) center center / cover no-repeat;
-  opacity: .38;
-  filter: grayscale(.35) brightness(.8) contrast(1.1);
+  opacity: .22;
+  filter: grayscale(.45) brightness(.7) contrast(1.15);
 }
 
 .bg-tint{
@@ -90,8 +75,8 @@ a{ color: var(--green); text-decoration: none; }
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 50% -10%, rgba(0,255,65,.12), transparent 55%),
-    linear-gradient(180deg, rgba(0,12,4,.70) 0%, rgba(0,0,0,.88) 60%, #000 100%);
+    radial-gradient(ellipse at 50% -10%, rgba(0,255,65,.10), transparent 55%),
+    linear-gradient(180deg, rgba(0,12,4,.55) 0%, rgba(0,0,0,.82) 60%, #000 100%);
 }
 
 #matrix{
@@ -99,10 +84,9 @@ a{ color: var(--green); text-decoration: none; }
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: .55;
+  opacity: .72;
 }
 
-/* Scanlines */
 .scanlines{
   position: fixed;
   inset: 0;
@@ -110,15 +94,14 @@ a{ color: var(--green); text-decoration: none; }
   pointer-events: none;
   background: repeating-linear-gradient(
     180deg,
-    rgba(0,0,0,0)      0px,
-    rgba(0,0,0,0)      2px,
-    rgba(0,0,0,.38)    3px,
-    rgba(0,0,0,.38)    4px
+    rgba(0,0,0,0) 0px,
+    rgba(0,0,0,0) 2px,
+    rgba(0,0,0,.38) 3px,
+    rgba(0,0,0,.38) 4px
   );
   animation: flicker 7s infinite steps(1);
 }
 
-/* Vignette */
 .vignette{
   position: fixed;
   inset: 0;
@@ -129,14 +112,11 @@ a{ color: var(--green); text-decoration: none; }
 
 @keyframes flicker{
   0%, 96%, 100% { opacity: .55; }
-  97%           { opacity: .38; }
-  98%           { opacity: .62; }
-  99%           { opacity: .45; }
+  97% { opacity: .38; }
+  98% { opacity: .62; }
+  99% { opacity: .45; }
 }
 
-/* ============================================================
-   4. LAYOUT
-   ============================================================ */
 .wrap{
   width: min(1100px, 92vw);
   margin-inline: auto;
@@ -149,9 +129,6 @@ header, main, footer{
 
 section{ padding: 90px 0; }
 
-/* ============================================================
-   5. NAV
-   ============================================================ */
 .nav{
   position: sticky;
   top: 0;
@@ -212,9 +189,6 @@ section{ padding: 90px 0; }
 }
 .nav nav a:hover::after{ width: 100%; }
 
-/* ============================================================
-   6. HERO
-   ============================================================ */
 .hero{
   min-height: calc(100vh - 60px);
   display: flex;
@@ -270,9 +244,6 @@ section{ padding: 90px 0; }
   flex-wrap: wrap;
 }
 
-/* ============================================================
-   7. GLITCH TEXT
-   ============================================================ */
 .glitch{
   position: relative;
   display: inline-block;
@@ -309,9 +280,6 @@ section{ padding: 90px 0; }
   94%{ clip-path: inset(38% 0 42% 0); transform: translate(2px, 1px); }
 }
 
-/* ============================================================
-   8. BUTTONS
-   ============================================================ */
 .btn{
   display: inline-block;
   padding: 12px 24px;
@@ -347,9 +315,6 @@ section{ padding: 90px 0; }
   box-shadow: 0 0 18px rgba(0,255,65,.35);
 }
 
-/* ============================================================
-   9. SECTION HEADINGS
-   ============================================================ */
 .sec-head{
   display: flex;
   align-items: center;
@@ -379,9 +344,6 @@ section{ padding: 90px 0; }
   letter-spacing: .2em;
 }
 
-/* ============================================================
-   10. PANELS / CARDS
-   ============================================================ */
 .panel{
   background: var(--panel);
   border: 1px solid var(--line);
@@ -426,9 +388,6 @@ section{ padding: 90px 0; }
   gap: 24px;
 }
 
-/* ============================================================
-   11. SPEC BARS
-   ============================================================ */
 .spec-row{
   display: grid;
   grid-template-columns: 130px 1fr 52px;
@@ -440,7 +399,6 @@ section{ padding: 90px 0; }
 }
 
 .spec-row:last-child{ margin-bottom: 0; }
-
 .spec-row > span:first-child{ color: var(--green-soft); }
 .spec-row > span:last-child{ text-align: right; color: var(--green); }
 
@@ -466,9 +424,6 @@ section{ padding: 90px 0; }
   from{ width: 0; }
 }
 
-/* ============================================================
-   12. ARCHIVE CARDS
-   ============================================================ */
 .card{
   display: flex;
   flex-direction: column;
@@ -542,9 +497,6 @@ section{ padding: 90px 0; }
   border-color: var(--green);
 }
 
-/* ============================================================
-   12b. GALLERY GRID
-   ============================================================ */
 .gallery-grid{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -610,9 +562,6 @@ section{ padding: 90px 0; }
   z-index: 2;
 }
 
-/* ============================================================
-   13. CONTACT / TERMINAL BLOCK
-   ============================================================ */
 .terminal{
   background: rgba(0, 10, 4, .78);
   border: 1px solid var(--line);
@@ -646,9 +595,6 @@ section{ padding: 90px 0; }
 .line .k{ color: var(--green); }
 .line .v{ color: rgba(125,255,164,.85); }
 
-/* ============================================================
-   14. FOOTER
-   ============================================================ */
 footer{
   border-top: 1px solid var(--line);
   padding: 28px 0 40px;
@@ -665,9 +611,6 @@ footer{
 footer a{ color: var(--green-soft); }
 footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
 
-/* ============================================================
-   15. RESPONSIVE
-   ============================================================ */
 @media (max-width: 900px){
   .grid-3{ grid-template-columns: 1fr 1fr; }
   .gallery-grid{ grid-template-columns: repeat(2, 1fr); }
@@ -684,9 +627,6 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
   footer{ justify-content: center; text-align: center; }
 }
 
-/* ============================================================
-   16. ACCESSIBILITY
-   ============================================================ */
 @media (prefers-reduced-motion: reduce){
   *{ animation: none !important; transition: none !important; }
   html{ scroll-behavior: auto; }
@@ -696,23 +636,18 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
 
 <body>
 
-  <p>Background music will start automatically if the browser allows it.</p>
-
-  <!-- Hidden audio element -->
-  <audio id="bgm"
-         src="Enter the matrix5.mp3"
-         loop
-         preload="auto"
-         autoplay
-         playsinline
-         crossorigin="anonymous"
-         style="display:none"></audio>
+<audio id="bgm"
+       src="Enter the matrix5.mp3"
+       loop
+       preload="auto"
+       playsinline
+       crossorigin="anonymous"
+       style="display:none"></audio>
 
 <script>
 (() => {
   const audio = document.getElementById('bgm');
-  const TARGET_VOLUME = 0.25; // background volume
-
+  const TARGET_VOLUME = 0.25;
   let ctx, gain, source;
   let started = false;
   let starting = false;
@@ -720,35 +655,25 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
   function buildChain() {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     ctx = new AudioCtx();
-
-    // Take control of the audio element's output
     source = ctx.createMediaElementSource(audio);
 
-    // 1) Remove low bass — cheap-speaker feel
     const highpass = ctx.createBiquadFilter();
     highpass.type = 'highpass';
     highpass.frequency.value = 180;
 
-    // 2) Remove high sparkle — muffled / low-quality sound
     const lowpass = ctx.createBiquadFilter();
     lowpass.type = 'lowpass';
     lowpass.frequency.value = 2400;
     lowpass.Q.value = 0.7;
 
-    // 3) Volume control + fade
     gain = ctx.createGain();
     gain.gain.value = 0;
 
-    source
-      .connect(highpass)
-      .connect(lowpass)
-      .connect(gain)
-      .connect(ctx.destination);
+    source.connect(highpass).connect(lowpass).connect(gain).connect(ctx.destination);
   }
 
   function fadeTo(target, seconds = 0.8) {
     if (!ctx || !gain) return;
-
     const now = ctx.currentTime;
     gain.gain.cancelScheduledValues(now);
     gain.gain.setValueAtTime(gain.gain.value, now);
@@ -758,22 +683,16 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
   async function startAudio() {
     if (starting) return false;
     starting = true;
-
     try {
       if (!started) {
         buildChain();
         started = true;
       }
-
-      if (ctx.state === 'suspended') {
-        await ctx.resume();
-      }
-
+      if (ctx.state === 'suspended') await ctx.resume();
       await audio.play();
       fadeTo(TARGET_VOLUME);
       return true;
     } catch (err) {
-      // Most likely autoplay was blocked
       return false;
     } finally {
       starting = false;
@@ -782,39 +701,26 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
 
   function armFirstInteractionStarter() {
     const events = ['pointerdown', 'touchstart', 'keydown', 'click'];
-
     const handler = async () => {
       const ok = await startAudio();
-      if (ok) {
-        events.forEach(eventName => {
-          document.removeEventListener(eventName, handler);
-        });
-      }
+      if (ok) events.forEach(e => document.removeEventListener(e, handler));
     };
-
-    events.forEach(eventName => {
-      document.addEventListener(eventName, handler, { passive: true });
-    });
+    events.forEach(e => document.addEventListener(e, handler, { passive: true }));
   }
 
-  // Try automatic playback as soon as possible
   (async () => {
     const ok = await startAudio();
-    if (!ok) {
-      // Browser blocked it — start on first user interaction
-      armFirstInteractionStarter();
-    }
+    if (!ok) armFirstInteractionStarter();
   })();
 })();
-  </script>
-<!-- ===== BACKGROUND LAYERS ===== -->
+</script>
+
 <div class="bg-image" aria-hidden="true"></div>
 <div class="bg-tint" aria-hidden="true"></div>
 <canvas id="matrix" aria-hidden="true"></canvas>
 <div class="scanlines" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
 
-<!-- ===== HEADER ===== -->
 <header class="nav">
   <a class="brand" href="#top"><span class="blink">▮</span> MATRIX_TERMINAL</a>
   <nav>
@@ -828,7 +734,6 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
 
 <main>
 
-  <!-- ===== HERO ===== -->
   <section class="hero wrap" id="top">
     <p class="prompt">Matrix world:~$ <span id="typed">access granted...</span><span class="caret" aria-hidden="true"></span></p>
     <h1 class="glitch" data-text="WAKE UP">WAKE UP Neo </h1>
@@ -842,7 +747,6 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
     </div>
   </section>
 
-  <!-- ===== WHOAMI ===== -->
   <section class="wrap" id="whoami">
     <div class="sec-head">
       <span class="idx">[01]</span>
@@ -867,7 +771,6 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
     </div>
   </section>
 
-  <!-- ===== SPEC ===== -->
   <section class="wrap" id="spec">
     <div class="sec-head">
       <span class="idx">[02]</span>
@@ -903,7 +806,6 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
     </div>
   </section>
 
-  <!-- ===== GALLERY ===== -->
   <section class="wrap" id="gallery">
     <div class="sec-head">
       <span class="idx">[03]</span>
@@ -935,14 +837,13 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
         <img src="assets/gallery6.jpg" alt="Neon grid corridor" loading="lazy" />
         <span class="gallery-caption">GRID_CORRIDOR.PNG</span>
       </div>
-         <div class="gallery-item">
+      <div class="gallery-item">
         <img src="assets/gallery7.jpg" alt="Neon grid corridor" loading="lazy" />
         <span class="gallery-caption">GRID_CORRIDOR.PNG</span>
       </div>
     </div>
   </section>
 
-  <!-- ===== ABOUT ME ===== -->
   <section class="wrap" id="About me">
     <div class="sec-head">
       <span class="idx">[04]</span>
@@ -954,26 +855,25 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
         <h3>PROJECT_01</h3>
         <p>A terminal dashboard that streams live system metrics with a green phosphor aesthetic.</p>
         <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
-        <a class="link" href="#">&gt; view_log</a>
+        <a class="link" href="#">> view_log</a>
       </article>
 
       <article class="card">
         <h3>PROJECT_02</h3>
         <p>An encrypted note vault. Everything stored locally, nothing leaves the grid.</p>
         <div class="tags"><span class="tag">JS</span><span class="tag">CRYPTO</span></div>
-        <a class="link" href="#">&gt; view_log</a>
+        <a class="link" href="#">> view_log</a>
       </article>
 
       <article class="card">
         <h3>PROJECT_03</h3>
         <p>A retro CRT landing page template with scanlines, glitch text and rain.</p>
         <div class="tags"><span class="tag">CSS</span><span class="tag">CANVAS</span></div>
-        <a class="link" href="#">&gt; view_log</a>
+        <a class="link" href="#">> view_log</a>
       </article>
     </div>
   </section>
 
-  <!-- ===== TRANSMIT ===== -->
   <section class="wrap" id="transmit">
     <div class="sec-head">
       <span class="idx">[05]</span>
@@ -990,4 +890,89 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
       <div class="terminal-body">
         <p class="line"><span class="k">$ connect --channel</span></p>
         <p class="line"><span class="v">email &nbsp;&nbsp;:: <a href="mailto:bfkd9b9@gmail.com">bfkd9b9@gmail.com</a></span></p>
-        <p class="line"><span class="v">github &nbsp;:: <a href="https://github.com/Mohamadx2" target="_blank" rel="noopener">github.com/your
+        <p class="line"><span class="v">github &nbsp;:: <a href="https://github.com/Mohamadx2" target="_blank" rel="noopener">github.com/Mohamadx2</a></span></p>
+        <p class="line"><span class="v">status &nbsp;:: channel open</span></p>
+        <p class="line"><span class="k">$ _</span></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>© 2026 MATRIX_TERMINAL // SYS.ROOT</span>
+  <span>signal encrypted · residual self-image active</span>
+</footer>
+
+<script>
+(() => {
+  const canvas = document.getElementById('matrix');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let width, height, columns, drops;
+
+  const chars = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%"\'#&_(),.;:?!\\|{}[]<>~';
+  const charArray = chars.split('');
+
+  const fontSize = 16;
+  const trailOpacity = 0.055;
+  const speedFactor  = 0.65;
+
+  function resize() {
+    width  = canvas.width  = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    columns = Math.floor(width / fontSize);
+    drops = new Array(columns).fill(1);
+  }
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 6, 2, ' + trailOpacity + ')';
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.font = fontSize + 'px "Share Tech Mono", "Courier New", monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = charArray[Math.floor(Math.random() * charArray.length)];
+      const x = i * fontSize;
+      const y = drops[i] * fontSize;
+
+      ctx.fillStyle = '#b8ffc8';
+      ctx.fillText(text, x, y);
+
+      if (y > fontSize) {
+        ctx.fillStyle = '#00ff41';
+        ctx.globalAlpha = 0.35;
+        ctx.fillText(
+          charArray[Math.floor(Math.random() * charArray.length)],
+          x,
+          y - fontSize
+        );
+        ctx.globalAlpha = 1;
+      }
+
+      if (y > height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i] += speedFactor;
+    }
+  }
+
+  function loop() {
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReduced) {
+    resize();
+    window.addEventListener('resize', resize);
+    loop();
+  } else {
+    canvas.style.opacity = '0.15';
+  }
+})();
+</script>
+
+</body>
+</html>
