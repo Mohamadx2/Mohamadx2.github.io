@@ -33,6 +33,7 @@ html{
 body{
   margin: 0;
   min-height: 100vh;
+  min-height: 100svh; /* better mobile viewport height */
   font-family: var(--font);
   font-size: 16px;
   line-height: 1.65;
@@ -40,6 +41,8 @@ body{
   background: var(--black);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%; /* prevent iOS text inflation */
+  text-size-adjust: 100%;
 }
 
 img{ max-width: 100%; display: block; }
@@ -191,6 +194,7 @@ section{ padding: 90px 0; }
 
 .hero{
   min-height: calc(100vh - 60px);
+  min-height: calc(100svh - 60px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -611,20 +615,160 @@ footer{
 footer a{ color: var(--green-soft); }
 footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
 
+/* ========== Responsive: tablets & medium screens ========== */
 @media (max-width: 900px){
   .grid-3{ grid-template-columns: 1fr 1fr; }
   .gallery-grid{ grid-template-columns: repeat(2, 1fr); }
+  .wrap{ width: min(1100px, 94vw); }
+  section{ padding: 72px 0; }
+  .hero h1{ font-size: clamp(2.2rem, 8vw, 4.5rem); }
 }
 
+/* ========== Responsive: large phones / small tablets ========== */
 @media (max-width: 720px){
-  section{ padding: 64px 0; }
+  section{ padding: 56px 0; }
   .grid-2, .grid-3{ grid-template-columns: 1fr; }
   .gallery-grid{ grid-template-columns: 1fr; }
-  .nav{ justify-content: center; }
-  .nav nav{ gap: 16px; font-size: .85rem; }
-  .spec-row{ grid-template-columns: 96px 1fr 44px; font-size: .78rem; }
-  .panel{ padding: 22px 20px; }
-  footer{ justify-content: center; text-align: center; }
+  .nav{
+    justify-content: center;
+    padding: 12px 16px;
+    gap: 12px;
+  }
+  .nav nav{
+    gap: 14px;
+    justify-content: center;
+    width: 100%;
+  }
+  .nav nav a{
+    font-size: .82rem;
+    padding: 6px 4px; /* larger touch target */
+  }
+  .brand{ font-size: .95rem; letter-spacing: .12em; }
+  .spec-row{
+    grid-template-columns: 90px 1fr 42px;
+    font-size: .78rem;
+    gap: 10px;
+  }
+  .panel{ padding: 20px 18px; }
+  .card{ padding: 20px; }
+  .terminal-body{ padding: 18px 16px; }
+  footer{
+    justify-content: center;
+    text-align: center;
+    padding: 24px 12px 36px;
+  }
+  .hero{
+    min-height: calc(100svh - 56px);
+    padding: 48px 0 72px;
+  }
+  .hero .sub{ max-width: 100%; padding-left: 12px; }
+  .actions{ gap: 12px; }
+  .btn{
+    padding: 14px 20px;
+    font-size: .8rem;
+    min-height: 44px; /* WCAG-friendly touch target */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sec-head{ margin-bottom: 28px; gap: 12px; }
+  .sec-head h2{ font-size: clamp(1.15rem, 4.5vw, 1.6rem); }
+}
+
+/* ========== Responsive: phones (≤480px) ========== */
+@media (max-width: 480px){
+  body{ font-size: 15px; }
+  .wrap{ width: 92vw; }
+  section{ padding: 48px 0; }
+  .nav{
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 12px;
+  }
+  .nav nav{
+    gap: 8px 12px;
+    flex-wrap: wrap;
+  }
+  .nav nav a{ font-size: .78rem; letter-spacing: .06em; }
+  .brand{ text-align: center; font-size: .9rem; }
+  .hero h1{
+    font-size: clamp(1.9rem, 11vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: .02em;
+  }
+  .prompt{ font-size: .78rem; }
+  .hero .sub{
+    font-size: .92rem;
+    margin-bottom: 28px;
+  }
+  .actions{
+    flex-direction: column;
+    width: 100%;
+  }
+  .btn, .btn-ghost{
+    width: 100%;
+    text-align: center;
+    padding: 14px 16px;
+  }
+  .spec-row{
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .spec-row > span:last-child{ text-align: left; }
+  .bar{ height: 8px; }
+  .panel{ padding: 16px 14px; }
+  .card{ padding: 16px; }
+  .card h3{ font-size: .92rem; letter-spacing: .1em; }
+  .gallery-item{ aspect-ratio: 16 / 10; }
+  .gallery-caption{ font-size: .68rem; padding: 6px 10px; }
+  .terminal-body{ padding: 14px 12px; }
+  .line{ font-size: .85rem; }
+  .sec-head .idx{ font-size: .72rem; }
+  footer{
+    font-size: .72rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  /* Slightly reduce heavy visual effects on small screens for performance */
+  #matrix{ opacity: .55; }
+  .scanlines{ opacity: .7; }
+}
+
+/* ========== Very small phones / landscape phones ========== */
+@media (max-width: 360px){
+  .wrap{ width: 94vw; }
+  .hero h1{ font-size: clamp(1.7rem, 12vw, 2.6rem); }
+  .nav nav a{ font-size: .74rem; }
+  .btn{ font-size: .75rem; letter-spacing: .1em; }
+}
+
+/* Safe area support for notched devices (iPhone X+, etc.) */
+@supports (padding: max(0px)) {
+  .nav{
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+  body{
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  footer{
+    padding-bottom: max(36px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Landscape phones: keep content readable without excessive height */
+@media (max-height: 500px) and (orientation: landscape){
+  .hero{
+    min-height: auto;
+    padding: 32px 0 48px;
+  }
+  .hero h1{ font-size: clamp(1.8rem, 8vw, 3rem); }
+  section{ padding: 40px 0; }
+  .nav{ padding-top: 8px; padding-bottom: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -778,31 +922,11 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
     </div>
 
     <div class="panel">
-      <div class="spec-row">
-        <span>HTML / CSS</span>
-        <span class="bar"><i style="--v:96%"></i></span>
-        <span>96%</span>
-      </div>
-      <div class="spec-row">
-        <span>JAVASCRIPT</span>
-        <span class="bar"><i style="--v:88%"></i></span>
-        <span>88%</span>
-      </div>
-      <div class="spec-row">
-        <span>UI DESIGN</span>
-        <span class="bar"><i style="--v:81%"></i></span>
-        <span>81%</span>
-      </div>
-      <div class="spec-row">
-        <span>BACKEND</span>
-        <span class="bar"><i style="--v:70%"></i></span>
-        <span>70%</span>
-      </div>
-      <div class="spec-row">
-        <span>COFFEE</span>
-        <span class="bar"><i style="--v:100%"></i></span>
-        <span>100%</span>
-      </div>
+      <div class="spec-row"><span>HTML / CSS</span><span class="bar"><i style="--v:96%"></i></span><span>96%</span></div>
+      <div class="spec-row"><span>JAVASCRIPT</span><span class="bar"><i style="--v:88%"></i></span><span>88%</span></div>
+      <div class="spec-row"><span>UI DESIGN</span><span class="bar"><i style="--v:81%"></i></span><span>81%</span></div>
+      <div class="spec-row"><span>BACKEND</span><span class="bar"><i style="--v:70%"></i></span><span>70%</span></div>
+      <div class="spec-row"><span>COFFEE</span><span class="bar"><i style="--v:100%"></i></span><span>100%</span></div>
     </div>
   </section>
 
@@ -814,32 +938,28 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
 
     <div class="gallery-grid">
       <div class="gallery-item">
-        <img src="assets/gallery1.jpg" alt="Terminal interface screenshot" loading="lazy" />
-        <span class="gallery-caption">TERMINAL_INTERFACE.RAW</span>
+        <img src="assets/gallery-1.jpg" alt="TERMINAL_INTERFACE.RAW" loading="lazy">
+        <div class="gallery-caption">TERMINAL_INTERFACE.RAW</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery2.jpg" alt="Matrix rain visual" loading="lazy" />
-        <span class="gallery-caption">RAIN_CODE_SIMULATION</span>
+        <img src="assets/gallery-2.jpg" alt="RAIN_CODE_SIMULATION" loading="lazy">
+        <div class="gallery-caption">RAIN_CODE_SIMULATION</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery3.jpg" alt="Glitch text effect" loading="lazy" />
-        <span class="gallery-caption">GLITCH_PROTOCOL.SVG</span>
+        <img src="assets/gallery-3.jpg" alt="GLITCH_PROTOCOL.SVG" loading="lazy">
+        <div class="gallery-caption">GLITCH_PROTOCOL.SVG</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery4.jpg" alt="Scanline overlay test" loading="lazy" />
-        <span class="gallery-caption">SCANLINE_OVERLAY_09</span>
+        <img src="assets/gallery-4.jpg" alt="SCANLINE_OVERLAY_09" loading="lazy">
+        <div class="gallery-caption">SCANLINE_OVERLAY_09</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery5.png" alt="Green terminal readout" loading="lazy" />
-        <span class="gallery-caption">SYS_READOUT.DAT</span>
+        <img src="assets/gallery-5.jpg" alt="SYS_READOUT.DAT" loading="lazy">
+        <div class="gallery-caption">SYS_READOUT.DAT</div>
       </div>
       <div class="gallery-item">
-        <img src="assets/gallery6.png" alt="Neon grid corridor" loading="lazy" />
-        <span class="gallery-caption">GRID_CORRIDOR.PNG</span>
-      </div>
-      <div class="gallery-item">
-        <img src="assets/gallery7.png" alt="Neon grid corridor" loading="lazy" />
-        <span class="gallery-caption">GRID_CORRIDOR.PNG</span>
+        <img src="assets/gallery-6.jpg" alt="GRID_CORRIDOR.PNG" loading="lazy">
+        <div class="gallery-caption">GRID_CORRIDOR.PNG</div>
       </div>
     </div>
   </section>
@@ -855,21 +975,19 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
         <h3>PROJECT_01</h3>
         <p>A terminal dashboard that streams live system metrics with a green phosphor aesthetic.</p>
         <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
-        <a class="link" href="#">> view_log</a>
+        <a class="link" href="#">[> view_log]</a>
       </article>
-
       <article class="card">
         <h3>PROJECT_02</h3>
         <p>An encrypted note vault. Everything stored locally, nothing leaves the grid.</p>
         <div class="tags"><span class="tag">JS</span><span class="tag">CRYPTO</span></div>
-        <a class="link" href="#">> view_log</a>
+        <a class="link" href="#">[> view_log]</a>
       </article>
-
       <article class="card">
         <h3>PROJECT_03</h3>
         <p>A retro CRT landing page template with scanlines, glitch text and rain.</p>
         <div class="tags"><span class="tag">CSS</span><span class="tag">CANVAS</span></div>
-        <a class="link" href="#">> view_log</a>
+        <a class="link" href="#">[> view_log]</a>
       </article>
     </div>
   </section>
@@ -880,18 +998,16 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
       <h2>TRANSMIT</h2>
     </div>
 
-    <div class="terminal panel" style="padding:0;">
+    <div class="terminal">
       <div class="terminal-bar">
-        <span class="dot on"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span style="margin-left:8px;">secure_channel — bash</span>
+        <span class="dot"></span><span class="dot"></span><span class="dot on"></span>
+        <span>secure_channel — bash</span>
       </div>
       <div class="terminal-body">
         <p class="line"><span class="k">$ connect --channel</span></p>
-        <p class="line"><span class="v">email &nbsp;&nbsp;:: <a href="mailto:bfkd9b9@gmail.com">bfkd9b9@gmail.com</a></span></p>
-        <p class="line"><span class="v">github &nbsp;:: <a href="https://github.com/Mohamadx2" target="_blank" rel="noopener">github.com/Mohamadx2</a></span></p>
-        <p class="line"><span class="v">status &nbsp;:: channel open</span></p>
+        <p class="line"><span class="v">email :: <a href="mailto:bfkd9b9@gmail.com">bfkd9b9@gmail.com</a></span></p>
+        <p class="line"><span class="v">github :: <a href="https://github.com/Mohamadx2" target="_blank" rel="noopener">github.com/Mohamadx2</a></span></p>
+        <p class="line"><span class="v">status :: channel open</span></p>
         <p class="line"><span class="k">$ _</span></p>
       </div>
     </div>
@@ -900,77 +1016,59 @@ footer a:hover{ color: var(--green); text-shadow: 0 0 12px var(--green); }
 </main>
 
 <footer class="wrap">
-  <span>© 2026 MATRIX_TERMINAL // SYS.ROOT</span>
-  <span>signal encrypted · residual self-image active</span>
+  <span>MATRIX_TERMINAL // v1.0.0</span>
+  <span>built with pure HTML / CSS / JS · no frameworks</span>
 </footer>
 
 <script>
+/* Matrix rain */
 (() => {
   const canvas = document.getElementById('matrix');
-  if (!canvas) return;
-
   const ctx = canvas.getContext('2d');
-  let width, height, columns, drops;
-
-  const chars = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$+-*/=%"\'#&_(),.;:?!\\|{}[]<>~';
-  const charArray = chars.split('');
-
-  const fontSize = 16;
-  const trailOpacity = 0.055;
-  const speedFactor  = 0.65;
+  let w, h, columns, drops;
+  const chars = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789ABCDEF<>{}[]|/\\=+-_*';
+  const fontSize = 14;
 
   function resize() {
-    width  = canvas.width  = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-    columns = Math.floor(width / fontSize);
-    drops = new Array(columns).fill(1);
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    columns = Math.floor(w / fontSize);
+    drops = Array(columns).fill(1);
   }
 
   function draw() {
-    ctx.fillStyle = 'rgba(0, 6, 2, ' + trailOpacity + ')';
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.font = fontSize + 'px "Share Tech Mono", "Courier New", monospace';
-
+    ctx.fillStyle = 'rgba(3, 6, 3, 0.05)';
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#00ff41';
+    ctx.font = fontSize + 'px monospace';
     for (let i = 0; i < drops.length; i++) {
-      const text = charArray[Math.floor(Math.random() * charArray.length)];
-      const x = i * fontSize;
-      const y = drops[i] * fontSize;
-
-      ctx.fillStyle = '#b8ffc8';
-      ctx.fillText(text, x, y);
-
-      if (y > fontSize) {
-        ctx.fillStyle = '#00ff41';
-        ctx.globalAlpha = 0.35;
-        ctx.fillText(
-          charArray[Math.floor(Math.random() * charArray.length)],
-          x,
-          y - fontSize
-        );
-        ctx.globalAlpha = 1;
-      }
-
-      if (y > height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
-      drops[i] += speedFactor;
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > h && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
     }
   }
 
-  function loop() {
-    draw();
-    requestAnimationFrame(loop);
-  }
+  resize();
+  window.addEventListener('resize', resize);
+  setInterval(draw, 50);
+})();
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!prefersReduced) {
-    resize();
-    window.addEventListener('resize', resize);
-    loop();
-  } else {
-    canvas.style.opacity = '0.15';
-  }
+/* Typing effect */
+(() => {
+  const el = document.getElementById('typed');
+  if (!el) return;
+  const text = el.textContent;
+  el.textContent = '';
+  let i = 0;
+  const tick = () => {
+    if (i < text.length) {
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(tick, 40 + Math.random() * 40);
+    }
+  };
+  setTimeout(tick, 600);
 })();
 </script>
 
